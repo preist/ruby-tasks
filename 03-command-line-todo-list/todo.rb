@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
-require_relative "todo/cli"
+require_relative "lib/cli"
 
 Todo::CLI.start(ARGV)
