@@ -17,9 +17,9 @@ module Todo
       pretty_print_tasks(@store.tasks)
     end
 
-    desc "-r or --remove [ITEM]", "Removes an item from the list of tasks"
-    map %w[-r --remove] => :remove
-    def remove(item)
+    desc "-d or --delete [NUMBER]", "Deletes task at index NUMBER from the list"
+    map %w[-d --delete] => :delete
+    def delete(item)
       tasks = @store.tasks
 
       if tasks.length < item.to_i
@@ -29,6 +29,18 @@ module Todo
 
       shell.say "\n\"\e[1m#{tasks.delete_at(item.to_i - 1)}\"\e[0m [removed]\n\n"
       @store.tasks = tasks
+    end
+
+    desc "-r or --remove [NUMBER]", "Removes the last NUMBER of items the list"
+    map %w[-r --remove] => :remove
+    def remove(items)
+      tasks = @store.tasks
+      clear and return if tasks.length <= items.to_i
+      @store.tasks = tasks - tasks.last(items.to_i)
+
+      tasks.last(items.to_i).each do |task|
+        shell.say "\"#{task}\" \e[1m[removed]\e[0m"
+      end
     end
 
     desc "-l or --list", "List the tasks"
